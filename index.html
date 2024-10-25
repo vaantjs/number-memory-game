@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Memory Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Number Memory Game</h1>
+        <p id="instruction">Klik op Start om te beginnen!</p>
+        <button id="startBtn">Start</button>
+        <button id="resultsBtn">Toon Resultaten</button>
+        <div id="game">
+            <p id="numberDisplay"></p>
+            <input type="text" id="userInput" placeholder="Voer het nummer in" autocomplete="off">
+            <button id="submitBtn">Submit</button>
+        </div>
+        <p id="levelDisplay">Level: <span id="level">0</span></p>
+        <div id="results" style="display: none;">
+            <h2>Resultaten</h2>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
