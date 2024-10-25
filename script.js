@@ -1,9 +1,6 @@
-// script.js
-
 let level = 0;
 let currentNumber = "";
 let startTime;
-let showingNumber = false;
 let results = [];
 
 // HTML-elementen
@@ -14,10 +11,8 @@ const numberDisplay = document.getElementById("numberDisplay");
 const userInput = document.getElementById("userInput");
 const submitBtn = document.getElementById("submitBtn");
 const levelDisplay = document.getElementById("level");
-const resultsBtn = document.getElementById("resultsBtn");
-const resultContent = document.getElementById("resultContent");
-const resultsDiv = document.getElementById("results");
 
+// Functie om een willekeurig getal te genereren
 function generateRandomNumber(length) {
     let number = "";
     for (let i = 0; i < length; i++) {
@@ -26,6 +21,7 @@ function generateRandomNumber(length) {
     return number;
 }
 
+// Start nieuw level
 function startLevel() {
     level++;
     currentNumber = generateRandomNumber(level);
@@ -33,36 +29,29 @@ function startLevel() {
     showNumber(currentNumber);
 }
 
+// Toon het gegenereerde getal en verberg het daarna
 function showNumber(number) {
-    showingNumber = true;
     numberDisplay.textContent = number;
     game.style.display = "none";
-    
     setTimeout(() => {
         numberDisplay.textContent = "";
         game.style.display = "block";
         userInput.value = "";
         userInput.focus();
-        showingNumber = false;
         startTime = new Date();
-    }, 1500 + level * 500);
+    }, 1500 + level * 500);  // Getal is langer zichtbaar naarmate het level toeneemt
 }
 
+// Controleer de ingevoerde input
 function checkInput() {
-    if (showingNumber) return;
-
     const userAnswer = userInput.value;
     const endTime = new Date();
     const timeTaken = (endTime - startTime) / 1000;
 
     if (userAnswer === currentNumber) {
         instruction.textContent = "Goed gedaan! Volgende level.";
-        results.push({
-            level: level,
-            time: timeTaken,
-            date: new Date().toLocaleString(),
-        });
-        saveResults();
+        results.push({ level: level, time: timeTaken });
+        sendResults({ level: level, time: timeTaken });  // Resultaten verzenden naar server
         startLevel();
     } else {
         instruction.textContent = "Fout! Probeer opnieuw.";
@@ -70,27 +59,7 @@ function checkInput() {
     }
 }
 
-function saveResults() {
-    localStorage.setItem("numberMemoryResults", JSON.stringify(results));
-}
-
-function loadResults() {
-    const savedResults = localStorage.getItem("numberMemoryResults");
-    if (savedResults) {
-        results = JSON.parse(savedResults);
-    }
-}
-
-function displayResults() {
-    resultContent.innerHTML = "";
-    results.forEach((result, index) => {
-        const resultItem = document.createElement("p");
-        resultItem.textContent = `Speel ${index + 1}: Level ${result.level}, Tijd: ${result.time}s, Datum: ${result.date}`;
-        resultContent.appendChild(resultItem);
-    });
-    resultsDiv.style.display = "block";
-}
-
+// Reset het spel bij foutieve input
 function resetGame() {
     level = 0;
     currentNumber = "";
@@ -99,6 +68,25 @@ function resetGame() {
     instruction.textContent = "Klik op Start om opnieuw te beginnen.";
 }
 
+// Resultaten verzenden naar een server
+function sendResults(data) {
+    fetch("https://example-server.com/api/saveResults", {  // Vervang door echte server-URL
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Resultaten succesvol opgeslagen:", data);
+    })
+    .catch((error) => {
+        console.error("Fout bij het opslaan van de resultaten:", error);
+    });
+}
+
+// Event listeners voor start- en submitknoppen
 startBtn.addEventListener("click", () => {
     startBtn.style.display = "none";
     instruction.textContent = "Onthoud het getal en voer het in!";
@@ -111,7 +99,3 @@ userInput.addEventListener("keyup", (e) => {
         checkInput();
     }
 });
-
-resultsBtn.addEventListener("click", displayResults);
-
-loadResults();

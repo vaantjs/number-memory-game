@@ -1,4 +1,3 @@
-/* style.css */
 body {
     display: flex;
     justify-content: center;
@@ -35,7 +34,7 @@ input, button {
     border-radius: 5px;
 }
 
-#submitBtn, #startBtn, #resultsBtn {
+#submitBtn, #startBtn {
     background-color: #4CAF50;
     color: white;
     border: none;
